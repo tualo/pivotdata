@@ -12,7 +12,7 @@ class Tables extends PostCheck {
         $clientdb = App::get('clientDB');
         if (is_null($clientdb)) return;
         $tables = [
-            // 'sms_environment'=>[],
+            'pivot_configuration'=>[],
         ];
         self::tableCheck('sms',$tables,
             "please run the following command: `./tm install-sql-pivotdata --client ".$clientdb->dbname."`",
