@@ -145,6 +145,12 @@ Ext.define('Tualo.Pivotdata.controller.Viewport', {
 
     onDocumentSave: function(view) {
         view.unmask();
+    },
+
+    onRefreshRequest: function(){
+        let me = this;
+        let pivotgrid = me.getView().down('pivotgrid');
+        pivotgrid.getStore().reload();
     }
 
 });

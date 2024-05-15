@@ -100,7 +100,41 @@ class Configuration implements IRoute{
                 $config = [];
                 $config['title']=$pivot_configuration_data['name'];
 
-                $config['header']=json_decode( file_get_contents(__DIR__.'/Exporter.json'),true);
+                //$config['header']=json_decode( file_get_contents(__DIR__.'/Exporter.json'),true);
+                $config['header']=[
+                    'title'=>$pivot_configuration_data['name'],
+                    'iconCls'=>'x-fa fa-table',
+                    'tools'=>[
+                        [
+                            'glyph'=>'refresh',
+                            'xtype'=>'glyphtool',
+                            'handler'=>'onRefreshRequest'
+                        ],
+                        /*
+                        [
+                            'glyph'=>'gear',
+                            'xtype'=>'glyphtool',
+                            'handler'=>'showConfigurator'
+                        ],
+                        */
+                        [
+                            'glyph'=>'save',
+                            'xtype'=>'glyphtool',
+                            'tooltip'=>'Speichern',
+                            'handler'=>'save'
+                        ],
+                        /*[
+                            'type'=>'maximize',
+                            'handler'=>'function(){this.maximize();}'
+                        ],
+                        [
+                            'type'=>'close',
+                            'handler'=>'function(){this.close();}'
+                        ]*/
+                    ]
+                ];
+                $config['enableLocking']=true;
+
                 $config['listeners']=[];
                 $config['listeners']['documentsave'] = 'onDocumentSave';
                 $config['listeners']['beforedocumentsave'] = 'onBeforeDocumentSave';
@@ -109,8 +143,21 @@ class Configuration implements IRoute{
                 $config['matrix']=[
                     'type'=>'local',
                     'store'=>[
-                        'type'=>$pivot_configuration_data['id'].'_store',
+                        'type'  => $pivot_configuration_data['id'].'_store',
+                        'proxy' => [
+                            'type'  => 'repeatedajax',
+                            'model' => 'Tualo.DataSets.model.'.ucfirst($pivot_configuration_data['id']),
+                        //'model' => 'Tualo.DataSets.model.View_agenda_blg_zahlungen',
+                            'url'   => '/pivotdata/data/'.$pivot_configuration_data['id'],
+                            'reader'=>[
+                                //"model" => 'Tualo.DataSets.model.View_agenda_blg_zahlungen',
+                                'type'  => 'json',
+                                'root'  => 'data'
+                            ]
+                        ],
+                    
                         'autoLoad'=>true,
+                        'pageSize'=>100000,
                     ],
                     'aggregate'=>$aggregates,
                     'leftAxis'=>$lefts,
